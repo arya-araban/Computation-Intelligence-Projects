@@ -7,22 +7,6 @@ from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 
 
-def load_ds():
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()  # load the dataset
-
-    #   PRE-PROCESSING  #
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-
-    x_train = x_train / 255.0
-    x_test = x_test / 255.0
-
-    x_train = x_train.reshape(len(x_train), -1)
-    x_test = x_test.reshape(len(x_test), -1)
-
-    return x_train, x_test, y_train, y_test
-
-
 class K_MEANS:
     num_seeds = 0  # greater than or equal to 10
 
@@ -52,20 +36,31 @@ class K_MEANS:
         purity = np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix)
         print(f"purity: {purity * 100 :.2f}%")
 
-    def train(self, x_train, y_train):
-        kmeans = MiniBatchKMeans(n_clusters=self.num_seeds)
-        kmeans.fit(x_train)
-        labels = kmeans.labels_
-        # plot_k_means(x_train,labels)
+    def train_and_predict(self, x_train, y_train, x_test):
+        model = MiniBatchKMeans(n_clusters=self.num_seeds)
+        model.fit(x_train)
+
+        labels = model.labels_
         mapping = self.__retrieve_info(labels, y_train)
+
+        prediction = model.predict(x_test)
+
+        # plot_k_means(x_train,labels)
+
         # print(mapping)
         # print(labels)
         # print(y_train)
 
-        number_labels = np.zeros(len(labels))
-        for i in range(len(labels)):  # performing the mapping
-            number_labels[i] = mapping[kmeans.labels_[i]]
+        number_labels = np.zeros(len(prediction))
+        for i in range(len(prediction)):  # performing the mapping for prediction
+            number_labels[i] = mapping[prediction[i]]
         y_prediction = number_labels.astype('int')
+
+        ##IN CASE WE WANT PREDICTION FOR X_TEST ##
+        # number_labels = np.zeros(len(labels))
+        # for i in range(len(labels)):  # performing the mapping for prediction
+        #     number_labels[i] = mapping[labels[i]]
+        # y_prediction = number_labels.astype('int')
 
         return y_prediction
         # print("****")
@@ -78,8 +73,25 @@ class K_MEANS:
         self.num_seeds = num_seeds
 
 
+def load_ds():
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()  # load the dataset
+
+    #   PRE-PROCESSING  #
+    x_train = x_train.astype('float32')
+    x_test = x_test.astype('float32')
+
+    x_train = x_train / 255.0
+    x_test = x_test / 255.0
+
+    x_train = x_train.reshape(len(x_train), -1)
+    x_test = x_test.reshape(len(x_test), -1)
+
+    return x_train, x_test, y_train, y_test
+
+
+# main program:
 if __name__ == "__main__":
-    alg1 = K_MEANS(300)
-    x_train, x_test, y_train, y_test = load_ds()
-    y_predict = alg1.train(x_train, y_train)
-    alg1.print_metrics(y_predict, y_train)
+    alg1 = K_MEANS(256)
+    xTrain, xTest, yTrain, yTest = load_ds()
+    y_predict = alg1.train_and_predict(xTrain, yTrain, xTest)
+    alg1.print_metrics(y_predict, yTest)
