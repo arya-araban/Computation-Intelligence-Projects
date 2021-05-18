@@ -1,13 +1,14 @@
 from sklearn import metrics
 from sklearn.metrics import accuracy_score, adjusted_rand_score
-from tensorflow.keras.datasets import mnist
 import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 
+from project1.misc import load_ds
 
-class K_MEANS:
+
+class KMeans:
     num_seeds = 0  # greater than or equal to 10
 
     def plot_k_means(self, x_train, labels):
@@ -56,42 +57,21 @@ class K_MEANS:
             number_labels[i] = mapping[prediction[i]]
         y_prediction = number_labels.astype('int')
 
-        ##IN CASE WE WANT PREDICTION FOR X_TEST ##
+        """IN CASE WE WANT PREDICTION FOR X_TEST """
         # number_labels = np.zeros(len(labels))
         # for i in range(len(labels)):  # performing the mapping for prediction
         #     number_labels[i] = mapping[labels[i]]
         # y_prediction = number_labels.astype('int')
 
         return y_prediction
-        # print("****")
-        # print(number_labels)
-        # print(y_train)
-        # self.print_metrics(number_labels, y_train)
 
     def __init__(self, num_seeds):
-        # self.num_seeds = len(np.unique(y_train))
         self.num_seeds = num_seeds
-
-
-def load_ds():
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()  # load the dataset
-
-    #   PRE-PROCESSING  #
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-
-    x_train = x_train / 255.0
-    x_test = x_test / 255.0
-
-    x_train = x_train.reshape(len(x_train), -1)
-    x_test = x_test.reshape(len(x_test), -1)
-
-    return x_train, x_test, y_train, y_test
 
 
 # main program:
 if __name__ == "__main__":
-    alg1 = K_MEANS(256)
+    alg1 = KMeans(256)
     xTrain, xTest, yTrain, yTest = load_ds()
     y_predict = alg1.train_and_predict(xTrain, yTrain, xTest)
     alg1.print_metrics(y_predict, yTest)
