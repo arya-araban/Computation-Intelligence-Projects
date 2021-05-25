@@ -5,7 +5,7 @@ from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 
-from project1.misc import load_ds
+from misc import load_ds
 
 
 class KMeans:
