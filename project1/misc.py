@@ -11,6 +11,7 @@ def load_ds():
     x_train = x_train / 255.0
     x_test = x_test / 255.0
 
+    '''changing input into n*m vector for train and test'''
     x_train = x_train.reshape(len(x_train), -1)
     x_test = x_test.reshape(len(x_test), -1)
 

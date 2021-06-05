@@ -4,7 +4,6 @@ import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
-
 from misc import load_ds
 
 
